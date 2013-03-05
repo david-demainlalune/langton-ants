@@ -5,9 +5,9 @@
 
 window.onload = (function(){
 
-	var width = 600,
-		height = 600,
-		scale = 2,
+	var width = 300,
+		height = 300,
+		scale = 2, // representation scale
 		numOfAnts = 10,
 		squares,  // bitmap array, white = 0, black = 1
 		context;
@@ -126,8 +126,7 @@ window.onload = (function(){
 	var rotateLeft = function(ant){
 		var index = headings.indexOf(ant.heading);
 
-		index = index -1;
-
+		index = index - 1;
 		index = index < 0 ? 3 : index;
 
 		ant.heading = headings[index];
@@ -169,9 +168,7 @@ window.onload = (function(){
 
 		}
 
-		console.log(ants);
-
-
+		
 		var step = function(timestamp){
 
 			ants.forEach(function(ant, index){
