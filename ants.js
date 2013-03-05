@@ -9,9 +9,8 @@ window.onload = (function(){
 		height = 600,
 		scale = 2,
 		numOfAnts = 10,
-		blackSquares = [],  // list of position objects
+		squares,  // bitmap array, white = 0, black = 1
 		context;
-
 
 	// N E S W
 	var headings = [
@@ -20,6 +19,36 @@ window.onload = (function(){
 		{x : 0,  y : 1},
 		{x : -1, y : 0}
 	];
+
+	var generateWhiteSquares = function(w, h){
+		var result = [];
+
+		for(var i = 0; i < width * height; i++){
+			result.push(0);
+		}
+
+		return result;
+	};
+
+	var squareAtCoordinate = function(x, y){
+		return squares[x + (y * width)];
+	};
+
+	var setSquareAtCoordinate = function(x, y, value){
+		squares[x + (y * width)] = value;
+	};
+
+	var antIsOnBlackSpace = function(ant){
+		return squareAtCoordinate(ant.x, ant.y) == 1;
+	};
+
+	var removeBlackSquareForAnt = function(ant){
+		setSquareAtCoordinate(ant.x, ant.y, 0);
+	};
+
+	var addBlackSquareForAnt = function(ant){
+		setSquareAtCoordinate(ant.x, ant.y, 1);
+	};
 
 	var makeCanvas = function(width, height){
 		var canvas = document.createElement("canvas");
@@ -63,18 +92,6 @@ window.onload = (function(){
 
 	};
 
-	var antIsOnBlackSpace = function(ant){
-		var result = false;
-
-		blackSquares.forEach(function(point){
-			if (ant.x == point.x && ant.y == point.y){
-				result = true;
-			}
-		});
-
-		return result;
-	};
-
 	var makePoint = function(x, y){
 
 		x = x || 0;
@@ -91,23 +108,6 @@ window.onload = (function(){
                          ant.y * scale,
                          scale,
                          scale);
-	};
-
-	var removeBlackSquareForAnt = function(ant){
-		var index = -1;
-
-		blackSquares.forEach(function(point, listIndex){
-			if (ant.x == point.x && ant.y == point.y){
-				index = listIndex;
-			}
-		});
-
-		if (index != -1)
-			blackSquares.splice(index, 1);
-	};
-
-	var addBlackSquareForAnt = function(ant){
-		blackSquares.push(makePoint(ant.x, ant.y));
 	};
 
 	var rotateRight = function(ant){
@@ -140,7 +140,6 @@ window.onload = (function(){
 			paintSquareForAnt(ant, "black");
 			rotateRight(ant);
 		}
-
 	};
 
 
@@ -149,9 +148,12 @@ window.onload = (function(){
 		var	ants = [],
 			canvas = makeCanvas(width * scale, height * scale);
 
+		squares = generateWhiteSquares(width, height);
+
 		context = canvas.getContext("2d");
 		document.getElementsByTagName("body")[0].appendChild(canvas);
 
+		// generate ants
 		for (var i = 0; i < numOfAnts; i++) {
 			ants.push(makeAnt(Math.floor(Math.random() * width),
                               Math.floor(Math.random() * height)));
