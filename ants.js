@@ -20,6 +20,10 @@ window.onload = (function(){
 		{x : -1, y : 0}
 	];
 
+	var randomHeading = function(){
+		return headings[randInt(4)];
+	};
+
 	var generateWhiteSquares = function(w, h){
 		var result = [];
 
@@ -65,6 +69,8 @@ window.onload = (function(){
 		x = x || 0;
 		y = y || 0;
 		heading = heading || headings[0];
+
+
 
 		return {
 			x : x,
@@ -142,6 +148,10 @@ window.onload = (function(){
 		}
 	};
 
+	// returns rand "int" between [0,max) 
+	var randInt = function(max){
+		return Math.floor(Math.random() * max);
+	};
 
 	var main = function(){
 
@@ -155,9 +165,11 @@ window.onload = (function(){
 
 		// generate ants
 		for (var i = 0; i < numOfAnts; i++) {
-			ants.push(makeAnt(Math.floor(Math.random() * width),
-                              Math.floor(Math.random() * height)));
+			ants.push(makeAnt(randInt(width), randInt(height), randomHeading()));
+
 		}
+
+		console.log(ants);
 
 
 		var step = function(timestamp){
